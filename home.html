@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - Travel Booking</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css cho hiệu ứng -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --card-bg: #ffffff;
+            --body-bg: #f8f9fa;
+            --text-color: #212529;
+            --input-bg: #ffffff;
+            --input-text: #212529;
+            --input-border: #dee2e6;
+            --navbar-bg: #0d6efd; /* Màu xanh mặc định */
+            --navbar-text: #ffffff;
+        }
+
+        /* Cấu hình Dark Mode */
+        [data-theme="dark"] {
+            --card-bg: #2b3035;
+            --body-bg: #212529;
+            --text-color: #f8f9fa;
+            --bs-body-color: #f8f9fa;
+            
+            /* Màu cho Input/Select trong Dark Mode */
+            --input-bg: #343a40;
+            --input-text: #f8f9fa;
+            --input-border: #495057;
+            
+            /* Màu Navbar trong Dark Mode (chuyển sang tối hẳn cho dịu mắt) */
+            --navbar-bg: #1c1f23;
+            --navbar-text: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- SỬA LỖI NAVBAR & LANGUAGE --- */
+        .navbar {
+            background-color: var(--navbar-bg) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        /* Đảm bảo chữ trên Navbar luôn dùng biến màu đã định (luôn sáng) */
+        .navbar-brand, 
+        .nav-link, 
+        .navbar-text,
+        #userWelcome {
+            color: var(--navbar-text) !important;
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255,255,255,0.5);
+        }
+        .navbar-toggler-icon {
+            filter: invert(1); /* Đảm bảo icon menu mobile luôn trắng */
+        }
+
+        /* --- SỬA LỖI INPUT & SELECT (TÌM KIẾM) --- */
+        .form-control, 
+        .form-select {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border-color: var(--input-border);
+        }
+
+        .form-control:focus, 
+        .form-select:focus {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border-color: var(--primary-color);
+        }
+
+        /* Placeholder màu nhạt hơn chút trong dark mode */
+        [data-theme="dark"] .form-control::placeholder {
+            color: #adb5bd;
+        }
+
+        /* Dropdown Menu (Language) cũng cần dark mode */
+        [data-theme="dark"] .dropdown-menu {
+            background-color: var(--card-bg);
+            border-color: var(--input-border);
+        }
+        [data-theme="dark"] .dropdown-item {
+            color: var(--text-color);
+        }
+        [data-theme="dark"] .dropdown-item:hover {
+            background-color: var(--input-border);
+        }
+
+        /* Card Styling */
+        .tour-card {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .tour-img-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background-color: #ddd;
+        }
+
+        .tour-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            opacity: 0;
+            animation: fadeInImg 0.5s forwards;
+        }
+
+        @keyframes fadeInImg {
+            to { opacity: 1; }
+        }
+
+        .tour-card:hover .tour-img {
+            transform: scale(1.1);
+        }
+
+        .price-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(13, 110, 253, 0.9);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 2;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .tour-meta {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        [data-theme="dark"] .tour-meta {
+            color: #adb5bd;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .action-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 10px;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        #loading {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        [data-theme="dark"] #loading {
+            background: rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loading">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="home.html"><i class="fa-solid fa-plane-departure me-2"></i>TravelBooking</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    
+                    <!-- Language Selector -->
+                    <li class="nav-item dropdown me-2">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-globe"></i> <span id="currentLangLabel">VI</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('vi')">Tiếng Việt</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('en')">English</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item me-3">
+                        <span class="" id="userWelcome">Xin chào, User</span>
+                    </li>
+                    <li class="nav-item me-2">
+                        <button class="btn btn-outline-light btn-sm" onclick="toggleTheme()" title="Toggle Dark Mode">
+                            <i class="fa-solid fa-moon" id="themeIcon"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-light btn-sm text-primary fw-bold" onclick="logout()">
+                            <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">Đăng xuất</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        
+        <!-- Search & Filter Section -->
+        <div class="row mb-4 animate__animated animate__fadeInDown">
+            <div class="col-md-12">
+                <div class="card p-3 shadow-sm" style="background-color: var(--card-bg);">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="search">Tìm kiếm</span></label>
+                            <input type="text" class="form-control" id="searchInput" placeholder="Tên tour...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="fa-solid fa-location-dot"></i> <span data-i18n="destination">Điểm đến</span></label>
+                            <select class="form-select" id="destSelect">
+                                <option value="" data-i18n="allDestinations">Tất cả địa điểm</option>
+                                <!-- Sẽ được thêm bằng JS -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="fa-solid fa-dollar-sign"></i> <span data-i18n="maxPrice">Giá tối đa</span></label>
+                            <input type="number" class="form-control" id="priceInput" placeholder="Nhập giá...">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary w-100" onclick="filterTours()">
+                                <span data-i18n="filterBtn">Lọc</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tours Grid -->
+        <div class="row g-4" id="toursContainer">
+            <!-- Dữ liệu sẽ được JS render tại đây -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="noData" class="text-center py-5 d-none">
+            <i class="fa-solid fa-box-open fa-4x text-muted mb-3"></i>
+            <h3 data-i18n="noDataTitle">Không tìm thấy tour nào!</h3>
+            <p class="text-muted" data-i18n="noDataDesc">Vui lòng thử lại với từ khóa khác.</p>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="mb-0" data-i18n="footer">&copy; 2024 Travel Booking - Cuộc thi FE Đại Nam</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // CẤU HÌNH API
+        const PROJECT_ID = '693057bb778bbf9e0070fa8d';
+        const API_TOURS = `https://${PROJECT_ID}.mockapi.io/api/qldl/tours`;
+        
+        let allTours = []; 
+        let currentUser = null;
+        let currentLang = 'vi'; // Mặc định là Tiếng Việt
+
+        // --- DICTIONARY (TỪ ĐIỂN) ---
+        const translations = {
+            vi: {
+                welcome: "Xin chào",
+                logout: "Đăng xuất",
+                search: "Tìm kiếm",
+                searchPlaceholder: "Tên tour...",
+                destination: "Điểm đến",
+                allDestinations: "Tất cả địa điểm",
+                maxPrice: "Giá tối đa",
+                pricePlaceholder: "Nhập giá...",
+                filterBtn: "Lọc",
+                days: "ngày",
+                noDesc: "Chưa có mô tả cho tour này.",
+                addToFav: "Yêu thích",
+                addedFav: "Đã thích",
+                details: "Xem chi tiết",
+                noDataTitle: "Không tìm thấy tour nào!",
+                noDataDesc: "Vui lòng thử lại với từ khóa khác.",
+                footer: "© 2024 Travel Booking - Cuộc thi FE Đại Nam",
+                alertLogout: "Bạn có chắc muốn đăng xuất?",
+                alertFavExists: "Tour này đã có trong danh sách yêu thích!",
+                alertFavAdded: "Đã thêm vào danh sách yêu thích!",
+                alertLogin: "Bạn chưa đăng nhập! Vui lòng đăng nhập."
+            },
+            en: {
+                welcome: "Hello",
+                logout: "Logout",
+                search: "Search",
+                searchPlaceholder: "Tour name...",
+                destination: "Destination",
+                allDestinations: "All Destinations",
+                maxPrice: "Max Price",
+                pricePlaceholder: "Enter price...",
+                filterBtn: "Filter",
+                days: "days",
+                noDesc: "No description available.",
+                addToFav: "Favorite",
+                addedFav: "Favorited",
+                details: "Details",
+                noDataTitle: "No tours found!",
+                noDataDesc: "Please try again with different keywords.",
+                footer: "© 2024 Travel Booking - FE Contest Dai Nam",
+                alertLogout: "Are you sure you want to logout?",
+                alertFavExists: "This tour is already in your favorites!",
+                alertFavAdded: "Added to favorites!",
+                alertLogin: "You are not logged in! Please login."
+            }
+        };
+
+        // --- 1. KHỞI TẠO & AUTH ---
+        window.onload = function() {
+            checkLogin();
+            loadTheme();
+            loadLanguage(); // Tải ngôn ngữ đã lưu
+            fetchTours();
+        };
+
+        function checkLogin() {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                alert(getTrans('alertLogin')); // Dùng hàm lấy text dịch
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = JSON.parse(userStr);
+            updateWelcomeMsg();
+        }
+
+        function updateWelcomeMsg() {
+            if(currentUser) {
+                document.getElementById('userWelcome').textContent = `${getTrans('welcome')}, ${currentUser.name}`;
+            }
+        }
+
+        function logout() {
+            if(confirm(getTrans('alertLogout'))) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // --- 2. MULTI-LANGUAGE LOGIC ---
+        function loadLanguage() {
+            const savedLang = localStorage.getItem('language');
+            if (savedLang) {
+                currentLang = savedLang;
+            }
+            applyLanguage();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            applyLanguage();
+            // Render lại list tour để cập nhật text bên trong các card
+            renderTours(getFilteredTours()); 
+        }
+
+        function applyLanguage() {
+            // Cập nhật text cho các phần tử có data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+
+            // Cập nhật placeholders
+            document.getElementById('searchInput').placeholder = translations[currentLang].searchPlaceholder;
+            document.getElementById('priceInput').placeholder = translations[currentLang].pricePlaceholder;
+
+            // Cập nhật label trên nút dropdown
+            document.getElementById('currentLangLabel').textContent = currentLang.toUpperCase();
+            
+            // Cập nhật lời chào
+            updateWelcomeMsg();
+        }
+
+        // Helper lấy text theo key
+        function getTrans(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        // --- 3. XỬ LÝ DỮ LIỆU ---
+        async function fetchTours() {
+            document.getElementById('loading').style.display = 'flex';
+            try {
+                const res = await fetch(API_TOURS);
+                if (!res.ok) throw new Error('Lỗi tải dữ liệu');
+                
+                allTours = await res.json();
+                populateDestinations(allTours);
+                renderTours(allTours);
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('toursContainer').innerHTML = `<div class="alert alert-danger">Lỗi API: ${error.message}</div>`;
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function populateDestinations(tours) {
+            const destSelect = document.getElementById('destSelect');
+            // Giữ lại option đầu tiên (Tất cả địa điểm)
+            const firstOption = destSelect.options[0];
+            destSelect.innerHTML = ''; 
+            destSelect.appendChild(firstOption);
+
+            const destinations = [...new Set(tours.map(t => t.destination).filter(d => d))];
+            
+            destinations.forEach(dest => {
+                const option = document.createElement('option');
+                option.value = dest;
+                option.textContent = dest;
+                destSelect.appendChild(option);
+            });
+        }
+
+        // --- 4. RENDER UI VỚI PERFORMANCE TWEAKS ---
+        function renderTours(tours) {
+            const container = document.getElementById('toursContainer');
+            const noData = document.getElementById('noData');
+            container.innerHTML = '';
+
+            if (!tours || tours.length === 0) {
+                noData.classList.remove('d-none');
+                return;
+            }
+            noData.classList.add('d-none');
+
+            tours.forEach((tour, index) => {
+                // SỬA ĐỔI: Kiểm tra ảnh từ API trước
+                let imgSrc = tour.image;
+                
+                // Nếu không có ảnh hoặc link rỗng, dùng ảnh ngẫu nhiên từ Unsplash
+                if (!imgSrc || imgSrc.trim() === '') {
+                    imgSrc = `https://images.unsplash.com/photo-${getPhotoId(index)}?auto=format&fit=crop&w=600&q=80`;
+                }
+
+                const priceFormatted = new Intl.NumberFormat(currentLang === 'vi' ? 'vi-VN' : 'en-US', { 
+                    style: 'currency', 
+                    currency: currentLang === 'vi' ? 'VND' : 'USD' 
+                }).format(tour.price || 0);
+
+                // PERFORMANCE: Thêm loading="lazy" để tăng tốc độ load trang
+                // Thêm onerror để nếu link ảnh API bị chết thì fallback về placeholder
+                const html = `
+                    <div class="col-md-6 col-lg-4 animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s">
+                        <div class="tour-card h-100">
+                            <div class="tour-img-wrapper">
+                                <span class="price-badge">${priceFormatted}</span>
+                                <img src="${imgSrc}" class="tour-img" alt="${tour.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/600x400?text=Image+Error'">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate" title="${tour.title}">${tour.title}</h5>
+                                <div class="tour-meta">
+                                    <span class="me-3"><i class="fa-solid fa-location-dot"></i> ${tour.destination || 'N/A'}</span>
+                                    <span><i class="fa-regular fa-clock"></i> ${tour.duration || 0} ${getTrans('days')}</span>
+                                </div>
+                                <p class="card-text">${tour.description || getTrans('noDesc')}</p>
+                                
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline-danger flex-grow-1" onclick="addToFavorites('${tour.id}')">
+                                        <i class="fa-regular fa-heart"></i> ${getTrans('addToFav')}
+                                    </button>
+                                    <button class="btn btn-primary flex-grow-1">
+                                        ${getTrans('details')}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function getPhotoId(index) {
+            const photos = [
+                '1502003148287-a82ef6fa1312', '1476514525535-07fb3b4ae5f1', '1500835556837-99ac94a94552',
+                '1501785888041-af3ef285b470', '1507525428034-b723cf961d3e', '1530789253388-582c481c54b0'
+            ];
+            return photos[index % photos.length];
+        }
+
+        // --- 5. TÌM KIẾM & LỌC (CÓ DEBOUNCE PERFORMANCE) ---
+        
+        // Hàm Debounce: Đợi người dùng ngừng gõ X ms rồi mới chạy function
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+        function getFilteredTours() {
+             const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const destination = document.getElementById('destSelect').value;
+            const maxPrice = document.getElementById('priceInput').value;
+
+            return allTours.filter(tour => {
+                const matchName = !keyword || (tour.title && tour.title.toLowerCase().includes(keyword));
+                const matchDest = !destination || tour.destination === destination;
+                const price = parseFloat(tour.price);
+                const matchPrice = !maxPrice || (!isNaN(price) && price <= parseFloat(maxPrice));
+                return matchName && matchDest && matchPrice;
+            });
+        }
+
+        function filterTours() {
+            renderTours(getFilteredTours());
+        }
+
+        // Áp dụng Debounce cho ô tìm kiếm
+        // Nghĩa là: Chỉ khi bạn ngừng gõ 300ms, nó mới lọc.
+        const processChange = debounce(() => filterTours());
+
+        document.getElementById('searchInput').addEventListener('keyup', processChange);
+        document.getElementById('destSelect').addEventListener('change', filterTours);
+
+        // --- 6. CHỨC NĂNG YÊU THÍCH ---
+        function addToFavorites(tourId) {
+            const tour = allTours.find(t => t.id === tourId);
+            if (!tour) return;
+
+            const storageKey = `favorites_${currentUser.id}`;
+            let favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+            const exists = favorites.some(f => f.id === tour.id);
+            if (exists) {
+                alert(getTrans('alertFavExists'));
+                return;
+            }
+
+            favorites.push(tour);
+            localStorage.setItem(storageKey, JSON.stringify(favorites));
+            alert(getTrans('alertFavAdded'));
+            
+            const btn = event.currentTarget;
+            btn.innerHTML = `<i class="fa-solid fa-heart"></i> ${getTrans('addedFav')}`;
+            btn.classList.remove('btn-outline-danger');
+            btn.classList.add('btn-danger');
+        }
+
+        // --- 7. DARK MODE ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                icon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+            }
+        }
+    </script>
+</body>
+</html>

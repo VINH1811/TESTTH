@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tour - Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --card-bg: #ffffff;
+            --body-bg: #f8f9fa;
+            --text-color: #212529;
+            --input-bg: #ffffff;
+            --input-text: #212529;
+            --border-color: #dee2e6;
+            --hover-bg: #f1f3f5;
+        }
+
+        [data-theme="dark"] {
+            --card-bg: #2b3035;
+            --body-bg: #212529;
+            --text-color: #f8f9fa;
+            --input-bg: #343a40;
+            --input-text: #f8f9fa;
+            --border-color: #495057;
+            --hover-bg: #32383e;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ẩn scroll body chính để dùng scroll trong bảng */
+        }
+
+        /* --- SEARCH & FILTER BAR --- */
+        .filter-bar {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+        }
+
+        /* --- SCROLLABLE TABLE LOGIC --- */
+        .table-container {
+            /* Chiều cao tính toán: 100vh - (Navbar + Filter + Padding) */
+            height: calc(100vh - 220px); 
+            overflow-y: auto; /* Cuộn dọc */
+            overflow-x: auto; /* Cuộn ngang trên mobile */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background-color: var(--card-bg);
+            position: relative;
+        }
+
+        .table-custom {
+            margin-bottom: 0;
+            width: 100%;
+            border-collapse: separate; 
+            border-spacing: 0;
+            white-space: nowrap; /* Giữ dòng không bị ngắt trên mobile */
+        }
+
+        .table-custom thead th {
+            position: sticky; /* Cố định tiêu đề */
+            top: 0;
+            background-color: var(--primary-color);
+            color: white;
+            z-index: 2; /* Nổi lên trên nội dung */
+            padding: 12px 15px;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table-custom tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .table-custom td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            color: var(--text-color);
+        }
+
+        /* --- IMAGES --- */
+        .tour-thumb {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+            background-color: #eee;
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border-color: var(--border-color);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            box-shadow: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* FIX: Đảm bảo placeholder trong dark mode dễ nhìn hơn */
+        [data-theme="dark"] .form-control::placeholder {
+            color: #adb5bd;
+            opacity: 1;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary flex-shrink-0">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="home.html"><i class="fa-solid fa-user-shield me-2"></i>Admin Panel</a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="home.html" class="btn btn-sm btn-light text-primary fw-bold">
+                    <i class="fa-solid fa-house"></i> <span class="d-none d-md-inline">Trang Chủ</span>
+                </a>
+                <button class="btn btn-sm btn-outline-light" onclick="toggleTheme()">
+                    <i class="fa-solid fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-3 h-100">
+        
+        <!-- Header & Filter Section -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+            <h4 class="m-0 fw-bold"><i class="fa-solid fa-list text-primary"></i> Quản Lý Tour</h4>
+            <button class="btn btn-success shadow-sm" onclick="openModal('add')">
+                <i class="fa-solid fa-plus-circle me-1"></i> Thêm Mới
+            </button>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="filter-bar row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0 text-secondary"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" id="searchAdmin" placeholder="Tìm kiếm tên tour...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="filterDest">
+                    <option value="">Tất cả địa điểm</option>
+                    <!-- JS sẽ điền data -->
+                </select>
+            </div>
+            <div class="col-md-3">
+                 <select class="form-select" id="sortPrice">
+                    <option value="newest">Mới nhất</option>
+                    <option value="price_asc">Giá: Thấp -> Cao</option>
+                    <option value="price_desc">Giá: Cao -> Thấp</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Alert Notification -->
+        <div id="alertBox" class="alert d-none shadow" role="alert" style="position: absolute; top: 20px; right: 20px; z-index: 9999; min-width: 300px;"></div>
+
+        <!-- Scrollable Table Container -->
+        <div class="table-container custom-scrollbar">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 80px;">Ảnh</th>
+                        <th style="min-width: 200px;">Tên Tour</th>
+                        <th style="min-width: 150px;">Điểm đến</th>
+                        <th style="min-width: 120px;">Giá</th>
+                        <th style="min-width: 100px;">Thời lượng</th>
+                        <th class="text-center" style="width: 100px; position: sticky; right: 0; z-index: 3;">Hành động</th> 
+                        <!-- Cột hành động sticky bên phải nếu muốn (cần css thêm), tạm để thường -->
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data here -->
+                </tbody>
+            </table>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="text-center py-5 d-none">
+                <i class="fa-solid fa-search fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Không tìm thấy tour nào phù hợp.</p>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Đang tải dữ liệu...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form -->
+    <div class="modal fade" id="tourModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Thêm Tour Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tourForm">
+                        <input type="hidden" id="tourId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên Tour <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="title" required placeholder="VD: Du lịch Đà Nẵng 3N2Đ">
+                        </div>
+                        
+                        <div class="row g-2">
+                            <div class="col-6 mb-3">
+                                <label class="form-label fw-bold">Điểm đến <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="destination" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label fw-bold">Ngày</label>
+                                <input type="number" class="form-control" id="duration" min="1" value="1">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Giá (VND) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="price" required placeholder="VD: 5000000">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Link Ảnh</label>
+                            <input type="url" class="form-control" id="image" placeholder="https://...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary px-4" onclick="saveTour()">Lưu Lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // CẤU HÌNH API
+        const PROJECT_ID = '693057bb778bbf9e0070fa8d';
+        const API_TOURS = `https://${PROJECT_ID}.mockapi.io/api/qldl/tours`;
+        
+        let tourModal;
+        let allTours = [];
+        let filteredTours = [];
+
+        window.onload = function() {
+            if(!localStorage.getItem('currentUser')) {
+                // Uncomment line dưới khi chạy thật để bắt buộc đăng nhập
+                // window.location.href = 'index.html';
+            }
+
+            loadTheme();
+            tourModal = new bootstrap.Modal(document.getElementById('tourModal'));
+            fetchTours();
+
+            // Event Listeners cho Search & Filter
+            document.getElementById('searchAdmin').addEventListener('keyup', filterAndRender);
+            document.getElementById('filterDest').addEventListener('change', filterAndRender);
+            document.getElementById('sortPrice').addEventListener('change', filterAndRender);
+        };
+
+        // --- 1. LẤY DATA ---
+        async function fetchTours() {
+            setLoading(true);
+            try {
+                const res = await fetch(API_TOURS);
+                allTours = await res.json();
+                
+                // Tạo danh sách địa điểm cho dropdown
+                populateDestinations(allTours);
+                
+                // Mặc định hiển thị tất cả
+                filteredTours = [...allTours];
+                filterAndRender(); 
+            } catch (error) {
+                showAlert('Lỗi tải dữ liệu: ' + error.message, 'danger');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // --- 2. FILTER & SORT LOGIC ---
+        function filterAndRender() {
+            const keyword = document.getElementById('searchAdmin').value.toLowerCase().trim();
+            const dest = document.getElementById('filterDest').value;
+            const sortType = document.getElementById('sortPrice').value;
+
+            // Lọc
+            filteredTours = allTours.filter(tour => {
+                const matchName = !keyword || (tour.title && tour.title.toLowerCase().includes(keyword));
+                const matchDest = !dest || tour.destination === dest;
+                return matchName && matchDest;
+            });
+
+            // Sắp xếp
+            if (sortType === 'newest') {
+                filteredTours.sort((a, b) => b.id - a.id);
+            } else if (sortType === 'price_asc') {
+                filteredTours.sort((a, b) => Number(a.price) - Number(b.price));
+            } else if (sortType === 'price_desc') {
+                filteredTours.sort((a, b) => Number(b.price) - Number(a.price));
+            }
+
+            renderTable(filteredTours);
+        }
+
+        function populateDestinations(tours) {
+            const select = document.getElementById('filterDest');
+            const dests = [...new Set(tours.map(t => t.destination).filter(d => d))];
+            
+            // Giữ option đầu, xóa còn lại
+            select.innerHTML = '<option value="">Tất cả địa điểm</option>';
+            dests.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                select.appendChild(opt);
+            });
+        }
+
+        // --- 3. RENDER TABLE (FIX LỖI ẢNH) ---
+        function renderTable(tours) {
+            const tbody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            tbody.innerHTML = '';
+
+            if (tours.length === 0) {
+                emptyState.classList.remove('d-none');
+                return;
+            }
+            emptyState.classList.add('d-none');
+
+            tours.forEach(tour => {
+                // Format giá
+                const priceFormatted = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tour.price);
+                
+                // Logic ảnh an toàn: Nếu lỗi -> set null onerror để chặn loop -> đổi sang placeholder
+                const fallbackImg = 'https://via.placeholder.com/60x40/e9ecef/6c757d?text=IMG';
+                const imgSrc = tour.image ? tour.image : fallbackImg;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-bold">#${tour.id}</td> <!-- Đã xóa class text-muted -->
+                    <td>
+                        <img src="${imgSrc}" class="tour-thumb" 
+                             alt="Tour Img"
+                             onerror="this.onerror=null;this.src='${fallbackImg}';" 
+                             loading="lazy">
+                    </td>
+                    <td>
+                        <div class="fw-bold text-primary text-truncate" style="max-width: 200px;" title="${tour.title}">${tour.title}</div>
+                    </td>
+                    <td>${tour.destination || '-'}</td>
+                    <td class="text-danger fw-bold">${priceFormatted}</td>
+                    <td>${tour.duration} ngày</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary" onclick="openEditModal('${tour.id}')" title="Sửa">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteTour('${tour.id}')" title="Xóa">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- 4. CRUD OPERATIONS (GIỮ NGUYÊN LOGIC CŨ) ---
+        function openModal(mode) {
+            document.getElementById('tourForm').reset();
+            document.getElementById('tourId').value = ''; 
+            document.getElementById('modalTitle').textContent = 'Thêm Tour Mới';
+            tourModal.show();
+        }
+
+        function openEditModal(id) {
+            const tour = allTours.find(t => t.id === id);
+            if (!tour) return;
+            document.getElementById('tourId').value = tour.id;
+            document.getElementById('title').value = tour.title;
+            document.getElementById('destination').value = tour.destination;
+            document.getElementById('price').value = tour.price;
+            document.getElementById('duration').value = tour.duration;
+            document.getElementById('description').value = tour.description;
+            document.getElementById('image').value = tour.image || '';
+            document.getElementById('modalTitle').textContent = `Sửa Tour #${id}`;
+            tourModal.show();
+        }
+
+        async function saveTour() {
+            const title = document.getElementById('title').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            const price = document.getElementById('price').value;
+            
+            if (!title || !destination || !price) {
+                showAlert('Vui lòng điền đủ thông tin!', 'warning');
+                return;
+            }
+
+            const id = document.getElementById('tourId').value;
+            const data = {
+                title, destination, price,
+                duration: document.getElementById('duration').value,
+                description: document.getElementById('description').value,
+                image: document.getElementById('image').value
+            };
+
+            // Tạm disable nút để tránh double click
+            const btnSave = document.querySelector('#tourModal .btn-primary');
+            const originalText = btnSave.textContent;
+            btnSave.textContent = 'Đang lưu...';
+            btnSave.disabled = true;
+
+            try {
+                if (id) {
+                    await fetch(`${API_TOURS}/${id}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data)
+                    });
+                    showAlert('Đã cập nhật tour!', 'success');
+                } else {
+                    data.createdAt = new Date().toISOString();
+                    await fetch(API_TOURS, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data)
+                    });
+                    showAlert('Thêm mới thành công!', 'success');
+                }
+                tourModal.hide();
+                fetchTours();
+            } catch (error) {
+                showAlert('Lỗi: ' + error.message, 'danger');
+            } finally {
+                btnSave.textContent = originalText;
+                btnSave.disabled = false;
+            }
+        }
+
+        async function deleteTour(id) {
+            if (confirm(`Xóa tour #${id}?`)) {
+                try {
+                    await fetch(`${API_TOURS}/${id}`, { method: 'DELETE' });
+                    showAlert('Đã xóa thành công', 'success');
+                    fetchTours();
+                } catch (error) {
+                    showAlert('Lỗi xóa: ' + error.message, 'danger');
+                }
+            }
+        }
+
+        // --- UTILS ---
+        function setLoading(isLoading) {
+            const loading = document.getElementById('loadingState');
+            if(isLoading) loading.classList.remove('d-none');
+            else loading.classList.add('d-none');
+        }
+
+        function showAlert(msg, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} shadow animate__animated animate__fadeInRight`;
+            alertBox.innerHTML = `<i class="fa-solid fa-circle-info me-2"></i> ${msg}`;
+            alertBox.classList.remove('d-none');
+            setTimeout(() => alertBox.classList.add('d-none'), 3000);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                html.removeAttribute('data-theme');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+            }
+        }
+    </script>
+</body>
+</html>

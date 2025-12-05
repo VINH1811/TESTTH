@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Booking - Đăng nhập & Đăng ký</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --bg-overlay: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            /* Hình nền du lịch */
+            background-image: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-pills .nav-link {
+            color: #555;
+            font-weight: 600;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .msg-error { background-color: #f8d7da; color: #842029; }
+        .msg-success { background-color: #d1e7dd; color: #0f5132; }
+
+        .brand-logo {
+            font-size: 2rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- Loading Spinner -->
+        <div class="loading-overlay" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div class="brand-logo">
+            <i class="fa-solid fa-plane-departure"></i> TravelBooking
+        </div>
+
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-pills nav-fill mb-4" id="authTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-form" type="button" role="tab">Đăng Nhập</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-form" type="button" role="tab">Đăng Ký</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="authTabContent">
+            
+            <!-- Login Form -->
+            <div class="tab-pane fade show active" id="login-form" role="tabpanel">
+                <form id="formLogin">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" class="form-control" id="loginPassword" placeholder="******" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
+                    
+                    <!-- Thông báo lỗi/thành công -->
+                    <div id="loginMsg" class="message-box"></div>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div class="tab-pane fade" id="register-form" role="tabpanel">
+                <form id="formRegister">
+                    <div class="mb-3">
+                        <label class="form-label">Họ và Tên</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control" id="regName" placeholder="Nguyễn Văn A" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="regEmail" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" class="form-control" id="regPassword" placeholder="******" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Đăng Ký Tài Khoản</button>
+
+                    <!-- Thông báo lỗi/thành công -->
+                    <div id="regMsg" class="message-box"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // CẤU HÌNH API - QUAN TRỌNG
+        // ID dự án của bạn: 693057bb778bbf9e0070fa8d
+        const PROJECT_ID = '693057bb778bbf9e0070fa8d';
+        // Đã sửa thành 'user' (số ít) để khớp với hình ảnh MockAPI của bạn.
+        // Nếu tên trên MockAPI của bạn là 'users', hãy đổi lại dòng này.
+        const RESOURCE_NAME = 'user'; 
+        
+        const API_URL = `https://${PROJECT_ID}.mockapi.io/api/qldl/${RESOURCE_NAME}`;
+
+        // DOM Elements
+        const formLogin = document.getElementById('formLogin');
+        const formRegister = document.getElementById('formRegister');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Hàm hiển thị thông báo
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = `message-box ${type === 'error' ? 'msg-error' : 'msg-success'}`;
+            el.style.display = 'block';
+            
+            // Tự động ẩn sau 3 giây
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+
+        // Toggle Loading
+        function toggleLoading(show) {
+            loadingSpinner.style.display = show ? 'flex' : 'none';
+        }
+
+        // --- XỬ LÝ ĐĂNG KÝ ---
+        formRegister.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            toggleLoading(true);
+
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase(); 
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                // Bước 1: Kiểm tra email đã tồn tại chưa
+                const checkRes = await fetch(`${API_URL}?email=${email}`);
+                
+                // Nếu API trả về 404, có thể do resource chưa có dữ liệu hoặc sai tên resource.
+                // Nhưng nếu đúng endpoint, tìm kiếm không thấy sẽ trả về [] (mảng rỗng) và status 200.
+                if (!checkRes.ok) {
+                    console.warn("API check email trả về lỗi:", checkRes.status);
+                    // Nếu lỗi 404 từ MockAPI, nó thường trả về chuỗi "Not found", 
+                    // ta coi như chưa có user này và cho phép đăng ký.
+                    if (checkRes.status !== 404) {
+                        throw new Error('Lỗi kết nối kiểm tra email');
+                    }
+                }
+
+                const existingUsers = await checkRes.json();
+
+                // QUAN TRỌNG: Kiểm tra kỹ xem kết quả có phải là mảng (Array) không.
+                // MockAPI đôi khi trả về string "Not found" khi 404, string cũng có .length nên gây lỗi logic.
+                if (Array.isArray(existingUsers) && existingUsers.length > 0) {
+                    toggleLoading(false);
+                    showMessage('regMsg', 'Email này đã được sử dụng!', 'error');
+                    return;
+                }
+
+                // Bước 2: Nếu chưa tồn tại, tạo user mới
+                const newUser = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+
+                const createRes = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUser)
+                });
+
+                if (createRes.ok) {
+                    showMessage('regMsg', 'Đăng ký thành công! Hãy đăng nhập.', 'success');
+                    formRegister.reset();
+                    // Chuyển sang tab đăng nhập sau 1.5s
+                    setTimeout(() => {
+                        document.querySelector('#login-tab').click();
+                    }, 1500);
+                } else {
+                    throw new Error('Lỗi khi tạo tài khoản');
+                }
+
+            } catch (error) {
+                console.error(error);
+                showMessage('regMsg', 'Có lỗi xảy ra: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        });
+
+        // --- XỬ LÝ ĐĂNG NHẬP ---
+        formLogin.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            toggleLoading(true);
+
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                // Bước 1: Tìm user có email và password khớp
+                const response = await fetch(`${API_URL}?email=${email}&password=${password}`);
+                
+                if (!response.ok) {
+                    // Nếu 404 hoặc lỗi khác
+                     if (response.status === 404) {
+                        showMessage('loginMsg', 'Email hoặc mật khẩu không chính xác.', 'error');
+                        return;
+                     }
+                     throw new Error('Lỗi kết nối API');
+                }
+                
+                const users = await response.json();
+
+                if (Array.isArray(users) && users.length > 0) {
+                    const user = users[0];
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+
+                    showMessage('loginMsg', 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+
+                } else {
+                    showMessage('loginMsg', 'Email hoặc mật khẩu không chính xác.', 'error');
+                }
+
+            } catch (error) {
+                console.error(error);
+                showMessage('loginMsg', 'Lỗi kết nối đến Server.', 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        });
+    </script>
+</body>
+</html>
