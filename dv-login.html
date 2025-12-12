@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập / Đăng ký </title>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://upload.wikimedia.org">
+    <link rel="preconnect" href="https://693057bb778bbf9e0070fa8d.mockapi.io">
+    <link rel="stylesheet" href="assets/styles/style.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity .6s ease, transform .6s ease;
+            will-change: opacity, transform; 
+        }
+
+        body.page-loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .btn.loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+            cursor: wait;
+        }
+        .btn.loading::after {
+            content: "";
+            position: absolute;
+            left: 50%; top: 50%;
+            width: 20px; height: 20px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+        .input-box {
+            position: relative; 
+        }
+        
+        .eye-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #333;
+            font-size: 20px;
+            z-index: 10;
+            transition: color 0.2s;
+        }
+        .eye-toggle:hover { color: #0d6efd; }
+        .input-box input[type="password"], 
+        .input-box input[type="text"] {
+            padding-right: 45px !important; 
+        }
+    </style>
+</head>
+<body>
+    <div id="modal-success" class="modal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <h2>Đăng ký thành công!</h2>
+            <p>Tài khoản của bạn đã được tạo thành công.</p>
+            <p class="modal__countdown">
+                Tự động chuyển sang đăng nhập sau <span id="modal-count">3</span> giây...
+            </p>
+            <button id="modal-btn-now" type="button">Đăng nhập ngay</button>
+        </div>
+    </div>
+
+    <a href="home.html">
+        <img src="images/logotamhoang.png"
+            class="logo-dn-page"
+            alt="logo"
+            width="1500" 
+            height="auto"
+            fetchpriority="high">
+    </a>
+
+    <div class="container">
+        <div class="form-box login">
+            <form id="formLogin" autocomplete="off">
+                <h1>Đăng nhập</h1>
+                <p>Truy cập hệ thống </p>
+
+                <div class="input-box">
+                    <input type="email" id="loginEmail" name="email" placeholder="Email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="loginPass" name="password" placeholder="Mật khẩu" required>
+                    <i class='bx bxs-lock-alt' style="right: 45px;"></i> 
+                    <i class='bx bxs-hide eye-toggle' id="toggleLoginPass"></i>
+                </div>
+
+                <div id="login-error" class="form-error" style="color: red; margin-bottom: 10px; font-size: 0.9em; min-height: 1.2em;"></div>
+
+                <div class="forgot-link">
+                    <a href="#">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn">Đăng nhập</button>
+
+                <div class="auth-small-text">
+                    <span>Tip:</span> Đăng nhập bằng Email và Mật khẩu đã đăng ký.
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <form id="formRegister" autocomplete="off">
+                <h1>Đăng ký tài khoản</h1>
+                <p>Nhập thông tin cá nhân để tạo tài khoản mới.</p>
+
+                <div class="input-box">
+                    <input type="text" id="regName" name="name" placeholder="Họ và tên" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                
+                <div class="input-box">
+                    <input type="email" id="regEmail" name="email" placeholder="Email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="regPass" name="password" placeholder="Mật khẩu" required>
+                    <i class='bx bxs-lock-alt' style="right: 45px;"></i>
+                    <i class='bx bxs-hide eye-toggle' id="toggleRegPass"></i>
+                </div>
+                
+                <div id="register-error" class="form-error" style="color: red; margin-bottom: 5px; font-size: 0.9em; min-height: 1.2em;"></div>
+
+                <button type="submit" class="btn">Tạo tài khoản</button>
+
+            </form>
+        </div>
+        <div class="toggle-box">
+            <div class="toggle-panel toggle-left">
+                <h1>Xin chào bạn!</h1>
+                <p>Nếu chưa có tài khoản, hãy đăng ký mới ngay.</p>
+                <button type="button" class="btn register-btn">Đăng ký</button>
+            </div>
+
+            <div class="toggle-panel toggle-right">
+                <h1>Chào mừng trở lại!</h1>
+                <p>Nếu đã có tài khoản, hãy đăng nhập để tiếp tục.</p>
+                <button type="button" class="btn login-btn">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/login.js"></script>
+</body>
+</html>

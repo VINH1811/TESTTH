@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách yêu thích - TAM HOANG HOTEL</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="assets/styles/home.css">
+    <!-- CSS riêng cho favorites -->
+    <link rel="stylesheet" href="assets/styles/favorites.css">
+
+    <!-- Bootstrap nếu cần thêm -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="home-body">
+
+<header class="home-navbar">
+    <div class="home-navbar__inner">
+        <a href="home.html" class="home-navbar__brand">
+            <img src="images/logotamhoang.png" alt="Logo" class="home-navbar__logo">
+            <div class="home-navbar__title">
+                <span data-i18n="brand_name">TAM HOANG HOTEL</span>
+                <small data-i18n="brand_tagline">Quản lý phòng & đặt phòng</small>
+            </div>
+        </a>
+
+        <!-- Hamburger mobile -->
+        <button class="nav-toggle" id="nav-toggle" aria-label="Mở menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav class="home-navbar__menu">
+            <a href="home.html" data-i18n="nav_home">Trang chủ</a>
+            <a href="rooms.html" class="tab-link" data-i18n="nav_rooms">Phòng</a>
+            <a href="cart.html" data-i18n="nav_cart">Giỏ hàng</a>
+            <a href="favorites.html" class="active" data-i18n="nav_favorites">Yêu thích</a>
+            <a href="manage-rooms.html" data-i18n="nav_manage">Quản lí phòng</a>
+        </nav>
+
+        <div class="home-navbar__right">
+            <button class="pill-btn" id="lang-toggle" aria-label="Đổi ngôn ngữ">
+                <span id="lang-label">VI</span>
+            </button>
+            <button class="pill-btn" id="theme-toggle" aria-label="Đổi chế độ sáng/tối">
+                <i class="bx bx-moon" id="theme-icon"></i>
+            </button>
+            <a href="login.html" class="home-navbar__login" data-i18n="nav_login">Đăng nhập</a>
+        </div>
+    </div>
+</header>
+
+<main class="fav-section">
+    <div class="section-inner fav-inner">
+        <div class="fav-header">
+            <h1 class="fav-title" data-i18n="fav_title">Danh sách yêu thích</h1>
+        </div>
+
+        <div id="fav-status" class="fav-status">Đang tải danh sách yêu thích...</div>
+
+        <div id="fav-empty" class="fav-empty d-none">
+            <i class='bx bx-heart'></i>
+            <h2 data-i18n="fav_empty_title">Chưa có phòng yêu thích</h2>
+            <p data-i18n="fav_empty_desc">
+                Bạn chưa thêm phòng nào vào danh sách yêu thích. Hãy quay lại trang chủ để chọn phòng phù hợp.
+            </p>
+            <a href="home.html" class="btn-primary fav-empty-btn" data-i18n="fav_empty_btn">
+                Quay lại trang phòng
+            </a>
+        </div>
+
+        <section class="fav-grid" id="fav-grid">
+            <!-- JS render card phòng yêu thích -->
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="section-inner">
+      <div class="footer-grid">
+        <!-- LEFT -->
+        <div class="footer-left">
+          <div class="footer-brand">
+            <img src="images/logotamhoang.png" alt="Logo" class="footer-logo" />
+            <div>
+              <h4 class="footer-team" data-i18n="footer_team_name">TEAM TAM HOANG</h4>
+              <p class="footer-sub" data-i18n="footer_team_desc">
+                Dự án quản lí khách sạn do team TAMHOANG phụ trách thực hiện.
+              </p>
+            </div>
+          </div>
+
+          <div class="footer-meta">
+            <div><i class="bx bx-envelope"></i> <span>support@tamhoang-hotel.com</span></div>
+            <div><i class="bx bx-phone"></i> <span>+84 123 456 789</span></div>
+          </div>
+
+          <p class="footer-copy">XIN CẢM ƠN</p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="footer-right">
+          <h4 class="footer-right-title" data-i18n="footer_members">Thành viên</h4>
+
+          <div class="member-grid">
+            <div class="member-card">
+              <img src="images/nvinh.jpg" alt="Member 1" />
+              <span class="member-name">Nguyễn Văn Vinh</span>
+            </div>
+            <div class="member-card">
+              <img src="images\dvin.jpg" alt="Member 2" />
+              <span class="member-name">Đỗ Văn Vinh</span>
+            </div>
+            <div class="member-card">
+              <img src="images\tmt.jpg" alt="Member 3" />
+              <span class="member-name">Trần Mạnh Tiến</span>
+            </div>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script src="assets/js/favorites.js"></script>
+</body>
+</html>

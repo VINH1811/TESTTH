@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang chủ khách sạn</title>
+
+  <!-- Bootstrap trước -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Icons -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- CSS chính -->
+  <link rel="stylesheet" href="assets/styles/home.css" />
+</head>
+
+<body class="home-body">
+  <!-- ========== HEADER ========== -->
+  <header class="home-navbar">
+    <div class="home-navbar__inner">
+      <a href="home.html" class="home-navbar__brand">
+        <img src="images/logotamhoang.png" alt="Logo" class="home-navbar__logo" />
+        <div class="home-navbar__title">
+          <span data-i18n="brand_name">TAM HOANG HOTEL</span>
+          <small data-i18n="brand_tagline">Quản lý phòng & đặt phòng</small>
+        </div>
+      </a>
+
+      <!-- Nút hamburger cho mobile -->
+      <button class="nav-toggle" id="nav-toggle" aria-label="Mở menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- “Thanh tab” navbar -->
+    <nav class="home-navbar__menu tab-nav">
+    <a href="home.html" class="tab-link active" data-i18n="nav_home">Trang chủ</a>
+    <a href="rooms.html" class="tab-link" data-i18n="nav_rooms">Phòng</a>
+    <a href="cart.html" class="tab-link" data-i18n="nav_cart">Giỏ hàng</a>
+    <a href="favorites.html" class="tab-link" data-i18n="nav_favorites">Yêu thích</a>
+    <a href="manage-rooms.html" class="tab-link" data-i18n="nav_manage">Quản lí phòng</a>
+</nav>
+
+
+      <div class="home-navbar__right">
+        <!-- Ngôn ngữ -->
+        <button class="pill-btn lang-toggle" id="lang-toggle" aria-label="Đổi ngôn ngữ">
+          <span id="lang-label">VI</span>
+        </button>
+
+        <!-- Dark / Light -->
+        <button class="pill-btn theme-toggle" id="theme-toggle" aria-label="Đổi chế độ sáng/tối">
+          <i class="bx bx-moon" id="theme-icon"></i>
+        </button>
+
+        <!-- Login -->
+        <a href="login.html" class="home-navbar__login" data-i18n="nav_login">Đăng nhập</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== PHẦN 1: HERO (GIỮ NGUYÊN) ========== -->
+  <section class="hero-banner">
+    <img src="images/anhnen.jpg" class="hero-bg" alt="Hotel Background" />
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-badge" data-i18n="hero_badge">
+          <i class="bx bxs-hotel"></i> Khách sạn 4★ hiện đại & sang trọng
+        </div>
+
+        <h1 class="hero-title" data-i18n="hero_title">
+          Trải nghiệm lưu trú chuẩn khách sạn,
+          quản lý phòng thông minh.
+        </h1>
+
+        <p class="hero-desc" data-i18n="hero_subtitle">
+          Hệ thống giúp bạn theo dõi tình trạng phòng, đặt phòng, khách lưu trú và doanh thu một cách trực quan, nhanh chóng.
+        </p>
+
+        <div class="hero-btns">
+          <!-- Danh sách tách trang riêng (làm sau), nên hero vẫn có nút dẫn -->
+          <a href="rooms.html" class="btn-primary" data-i18n="hero_btn_rooms">Xem danh sách phòng</a>
+          <button class="btn-outline" id="scroll-video" data-i18n="hero_btn_video">
+            Xem video giới thiệu
+          </button>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="stat-box">
+            <h3>120+</h3>
+            <p data-i18n="hero_stat_rooms">Phòng đang vận hành</p>
+          </div>
+          <div class="stat-box">
+            <h3>98%</h3>
+            <p data-i18n="hero_stat_rating">Khách hài lòng</p>
+          </div>
+          <div class="stat-box">
+            <h3>24/7</h3>
+            <p data-i18n="hero_stat_support">Hỗ trợ lễ tân</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cụm ảnh xếp tầng bên phải (GIỮ NGUYÊN) -->
+      <div class="hero-right">
+        <div class="mini-img img1">
+          <img src="images/anhnen.jpg" alt="Lobby" />
+          <span data-i18n="hero_img1">Không gian sảnh</span>
+        </div>
+
+        <div class="mini-img img2">
+          <img src="images/anhnen1.jpg" alt="Room" />
+          <span data-i18n="hero_img2">Phòng tiện nghi</span>
+        </div>
+
+        <div class="mini-img img3">
+          <img src="images/anhnen2.jpg" alt="Pool" />
+          <span data-i18n="hero_img3">Khu sinh hoạt</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PHẦN 2: VIDEO (GIỮ NGUYÊN) ========== -->
+  <section class="intro-video" id="about">
+    <div class="section-inner">
+      <h2 data-i18n="video_title">Video giới thiệu khách sạn</h2>
+      <p class="section-desc" data-i18n="video_subtitle">
+        Khám phá nhanh không gian sống, tiện nghi và dịch vụ tại khách sạn TAM HOANG.
+        Bạn có thể xem video giới thiệu tổng quan dưới đây.
+      </p>
+
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/7M-PXUZSWXI"
+          title="Hotel Intro"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PHẦN 3: HỖ TRỢ + THÔNG TIN KHÁCH SẠN (MỚI) ========== -->
+  <main class="home-main">
+    <section class="support-info" id="support">
+      <div class="section-inner">
+        <div class="support-header">
+          <h2 data-i18n="support_title">Hỗ trợ & Thông tin</h2>
+          <p class="section-desc" data-i18n="support_desc">
+            Gửi yêu cầu hỗ trợ nhanh chóng hoặc xem thông tin tổng quan về khách sạn.
+          </p>
+        </div>
+
+        <div class="support-grid">
+          <!-- LEFT: SUPPORT CARD -->
+          <div class="info-card info-card--glass">
+            <div class="card-head">
+              <div class="card-badge">
+                <i class="bx bx-support"></i>
+                <span data-i18n="help_card_badge">Hỗ trợ người dùng</span>
+              </div>
+              <h3 class="card-title" data-i18n="help_card_title">Gửi yêu cầu hỗ trợ</h3>
+              <p class="card-sub" data-i18n="help_card_sub">
+                Điền thông tin bên dưới, hệ thống sẽ ghi nhận và phản hồi sớm nhất.
+              </p>
+            </div>
+
+            <form class="support-form" id="support-form">
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="help-name" data-i18n="help_name">Họ và tên</label>
+                  <input id="help-name" type="text" placeholder="Nguyễn Văn A" required />
+                </div>
+                <div class="form-field">
+                  <label for="help-phone" data-i18n="help_phone">Số điện thoại</label>
+                  <input id="help-phone" type="tel" placeholder="0xxx xxx xxx" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="help-email" data-i18n="help_email">Email</label>
+                  <input id="help-email" type="email" placeholder="you@email.com" required />
+                </div>
+                <div class="form-field">
+                  <label for="help-topic" data-i18n="help_topic">Chủ đề</label>
+                  <select id="help-topic" required>
+                    <option value="" selected disabled data-i18n="help_topic_placeholder">Chọn chủ đề</option>
+                    <option value="booking" data-i18n="help_topic_booking">Đặt phòng</option>
+                    <option value="account" data-i18n="help_topic_account">Tài khoản</option>
+                    <option value="payment" data-i18n="help_topic_payment">Thanh toán</option>
+                    <option value="other" data-i18n="help_topic_other">Khác</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label for="help-message" data-i18n="help_message">Nội dung cần hỗ trợ</label>
+                <textarea id="help-message" rows="5" placeholder="Mô tả vấn đề bạn đang gặp..." required></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary btn-primary--solid" data-i18n="help_submit">
+                  Gửi yêu cầu
+                </button>
+                <p class="form-note" data-i18n="help_note">
+                  Tip: Vui lòng nhập đúng Email/SĐT để chúng tôi liên hệ nhanh.
+                </p>
+              </div>
+
+              <div class="form-toast" id="help-toast" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <!-- RIGHT: HOTEL INFO CARD -->
+          <div class="info-card">
+            <div class="card-head">
+              <div class="card-badge card-badge--alt">
+                <i class="bx bxs-buildings"></i>
+                <span data-i18n="hotel_card_badge">Thông tin khách sạn</span>
+              </div>
+              <h3 class="card-title" data-i18n="hotel_card_title">TAM HOANG HOTEL</h3>
+              <p class="card-sub" data-i18n="hotel_card_sub">
+                Khách sạn phong cách hiện đại – dịch vụ tiêu chuẩn 4★, phù hợp nghỉ dưỡng và công tác.
+              </p>
+            </div>
+
+            <div class="hotel-info-list">
+              <div class="hotel-info-item">
+                <i class="bx bx-map"></i>
+                <div>
+                  <b data-i18n="hotel_address_label">Địa chỉ</b>
+                  <p data-i18n="hotel_address_value">TP. Hồ Chí Minh, Việt Nam</p>
+                </div>
+              </div>
+
+              <div class="hotel-info-item">
+                <i class="bx bx-time-five"></i>
+                <div>
+                  <b data-i18n="hotel_time_label">Giờ hoạt động</b>
+                  <p data-i18n="hotel_time_value">24/7 – Lễ tân luôn sẵn sàng</p>
+                </div>
+              </div>
+
+              <div class="hotel-info-item">
+                <i class="bx bx-star"></i>
+                <div>
+                  <b data-i18n="hotel_rating_label">Đánh giá</b>
+                  <p data-i18n="hotel_rating_value">4.8/5 (126 đánh giá giả lập)</p>
+                </div>
+              </div>
+
+              <div class="hotel-info-item">
+                <i class="bx bx-wifi"></i>
+                <div>
+                  <b data-i18n="hotel_services_label">Dịch vụ nổi bật</b>
+                  <p data-i18n="hotel_services_value">WiFi miễn phí • Hồ bơi • Gym • Buffet sáng • Đưa đón sân bay</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="hotel-cta">
+              <a class="btn-outline btn-outline--dark" href="login.html">
+                <i class="bx bx-log-in"></i>
+                <span data-i18n="hotel_cta_login">Đăng nhập để quản lý</span>
+              </a>
+
+              <a class="btn-outline btn-outline--dark" href="#support">
+                <i class="bx bx-message-dots"></i>
+                <span data-i18n="hotel_cta_support">Gửi yêu cầu hỗ trợ</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER (MỚI – NỀN TỐI) ========== -->
+  <footer class="site-footer">
+    <div class="section-inner">
+      <div class="footer-grid">
+        <!-- LEFT -->
+        <div class="footer-left">
+          <div class="footer-brand">
+            <img src="images/logotamhoang.png" alt="Logo" class="footer-logo" />
+            <div>
+              <h4 class="footer-team" data-i18n="footer_team_name">TEAM TAM HOANG</h4>
+              <p class="footer-sub" data-i18n="footer_team_desc">
+                Dự án quản lí khách sạn do team TAMHOANG phụ trách thực hiện.
+              </p>
+            </div>
+          </div>
+
+          <div class="footer-meta">
+            <div><i class="bx bx-envelope"></i> <span>support@tamhoang-hotel.com</span></div>
+            <div><i class="bx bx-phone"></i> <span>+84 123 456 789</span></div>
+          </div>
+
+          <p class="footer-copy">XIN CẢM ƠN</p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="footer-right">
+          <h4 class="footer-right-title" data-i18n="footer_members">Thành viên</h4>
+
+          <div class="member-grid">
+            <div class="member-card">
+              <img src="images/nvinh.jpg" alt="Member 1" />
+              <span class="member-name">Nguyễn Văn Vinh</span>
+            </div>
+            <div class="member-card">
+              <img src="images\dvin.jpg" alt="Member 2" />
+              <span class="member-name">Đỗ Văn Vinh</span>
+            </div>
+            <div class="member-card">
+              <img src="images\tmt.jpg" alt="Member 3" />
+              <span class="member-name">Trần Mạnh Tiến</span>
+            </div>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

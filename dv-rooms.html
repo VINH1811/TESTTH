@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phòng</title>
+
+  <!-- Bootstrap (dùng để gọn layout) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Dùng lại home.css để giữ navbar/tab y hệt -->
+  <link rel="stylesheet" href="assets/styles/home.css" />
+  <!-- CSS riêng của Rooms -->
+  <link rel="stylesheet" href="assets/styles/rooms.css" />
+</head>
+
+<body class="home-body">
+
+  <!-- ===== HEADER / NAVBAR (giữ nguyên kiểu tab) ===== -->
+  <header class="home-navbar">
+    <div class="home-navbar__inner">
+      <a href="home.html" class="home-navbar__brand">
+        <img src="images/logotamhoang.png" alt="Logo" class="home-navbar__logo">
+        <div class="home-navbar__title">
+          <span data-i18n="brand_name">TAM HOANG HOTEL</span>
+          <small data-i18n="brand_tagline">Quản lý phòng & đặt phòng</small>
+        </div>
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Mở menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="home-navbar__menu">
+        <a href="home.html" data-i18n="nav_home">Trang chủ</a>
+        <a href="rooms.html" class="active" data-i18n="nav_rooms">Phòng</a>
+        <a href="cart.html" data-i18n="nav_cart">Giỏ hàng</a>
+        <a href="favorites.html" data-i18n="nav_favorites">Yêu thích</a>
+        <a href="manage-rooms.html" data-i18n="nav_manage">Quản lí phòng</a>
+      </nav>
+
+      <div class="home-navbar__right">
+        <button class="pill-btn lang-toggle" id="lang-toggle" aria-label="Đổi ngôn ngữ">
+          <span id="lang-label">VI</span>
+        </button>
+
+        <button class="pill-btn theme-toggle" id="theme-toggle" aria-label="Đổi chế độ sáng/tối">
+          <i class="bx bx-moon" id="theme-icon"></i>
+        </button>
+
+        <a href="login.html" class="home-navbar__login" data-i18n="nav_login">Đăng nhập</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== PAGE ===== -->
+  <main class="rooms-page">
+    <div class="section-inner">
+
+      <header class="rooms-head">
+        <h1 class="rooms-title" data-i18n="rooms_page_title">Danh sách phòng</h1>
+      </header>
+
+      <!-- ===== FILTER BAR (1 dòng gọn - dùng Bootstrap) ===== -->
+      <section class="filter-card" aria-label="Bộ lọc phòng">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-lg-6">
+            <label for="searchName" class="filter-label" data-i18n="filter_room_name">Tên phòng</label>
+            <input id="searchName" class="form-control form-control-lg filter-input" type="text" placeholder="Nhập tên phòng..." />
+          </div>
+
+          <div class="col-6 col-lg-2">
+            <label for="priceRange" class="filter-label" data-i18n="filter_price">Mức giá</label>
+            <select id="priceRange" class="form-select form-select-lg filter-input">
+              <option value="all" data-i18n="price_all">Tất cả</option>
+              <option value="lt500">Dưới 500.000đ</option>
+              <option value="500_1000">500.000đ – 1.000.000đ</option>
+              <option value="1000_2000">1.000.000đ – 2.000.000đ</option>
+              <option value="gt2000">Trên 2.000.000đ</option>
+            </select>
+          </div>
+
+          <div class="col-6 col-lg-2">
+            <label for="sortBy" class="filter-label" data-i18n="filter_sort">Sắp xếp</label>
+            <select id="sortBy" class="form-select form-select-lg filter-input">
+              <option value="name_asc">Tên A → Z</option>
+              <option value="name_desc">Tên Z → A</option>
+              <option value="price_asc">Giá tăng dần</option>
+              <option value="price_desc">Giá giảm dần</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-lg-2 d-flex gap-2 justify-content-lg-end">
+            <button class="btn-grad" id="btnApply" type="button" data-i18n="filter_apply">Lọc</button>
+            <button class="btn-ghost" id="btnReset" type="button">Đặt lại</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="roomsStatus" class="rooms-status">Đang tải danh sách phòng...</div>
+
+      <!-- ===== ROOM GRID ===== -->
+      <section class="rooms-grid" id="roomsGrid"></section>
+
+     
+      <!-- Pagination (Google style) -->
+<nav class="pager-simple" aria-label="Pagination">
+  <button id="pgPrev" class="pg-nav" type="button" aria-label="Previous">
+    <i class="bx bx-chevron-left"></i>
+  </button>
+
+  <div id="pgNums" class="pg-nums"></div>
+
+  <button id="pgNext" class="pg-nav" type="button" aria-label="Next">
+    <span class="pg-next-text">Tiếp</span>
+    <i class="bx bx-chevron-right"></i>
+  </button>
+</nav>
+
+
+    </div>
+  </main>
+
+  <!-- ===== MODAL CHI TIẾT (hiện đúng thông tin + ảnh phòng) ===== -->
+  <div class="room-modal" id="roomModal">
+    <div class="room-modal-overlay" id="roomModalOverlay"></div>
+
+    <div class="room-modal-content">
+      <button class="room-modal-close" id="roomModalClose" aria-label="Đóng">
+        <i class='bx bx-x'></i>
+      </button>
+
+      <div class="room-modal-left">
+        <img id="mImg" src="" alt="">
+        <div class="modal-thumbs" id="mThumbs"></div>
+      </div>
+
+      <div class="room-modal-right">
+        <div class="room-modal-main">
+          <h2 id="mName"></h2>
+          <p id="mDesc"></p>
+
+          <div class="room-modal-info">
+            <span id="mArea"></span>
+            <span id="mPeople"></span>
+          </div>
+
+          <p id="mType"></p>
+          <p id="mView"></p>
+
+          <div class="room-modal-price" id="mPrice"></div>
+
+          <div class="room-modal-buttons">
+            <button class="modal-btn-cart" id="mAddCart">
+              <i class='bx bx-cart-add'></i> <span data-i18n="modal_add_cart">Thêm vào giỏ</span>
+            </button>
+            <button class="modal-btn-fav" id="mAddFav">
+              <i class='bx bx-heart'></i> <span data-i18n="modal_add_fav">Yêu thích</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="room-modal-extra">
+          <h3 data-i18n="modal_detail_title">Chi tiết phòng</h3>
+          <p id="mLongDesc"></p>
+
+          <h3 data-i18n="modal_amenities_title">Tiện nghi nổi bật</h3>
+          <ul id="mAmenities"></ul>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+   <footer class="site-footer">
+    <div class="section-inner">
+      <div class="footer-grid">
+        <!-- LEFT -->
+        <div class="footer-left">
+          <div class="footer-brand">
+            <img src="images/logotamhoang.png" alt="Logo" class="footer-logo" />
+            <div>
+              <h4 class="footer-team" data-i18n="footer_team_name">TEAM TAM HOANG</h4>
+              <p class="footer-sub" data-i18n="footer_team_desc">
+                Dự án quản lí khách sạn do team TAMHOANG phụ trách thực hiện.
+              </p>
+            </div>
+          </div>
+
+          <div class="footer-meta">
+            <div><i class="bx bx-envelope"></i> <span>support@tamhoang-hotel.com</span></div>
+            <div><i class="bx bx-phone"></i> <span>+84 123 456 789</span></div>
+          </div>
+
+          <p class="footer-copy">XIN CẢM ƠN</p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="footer-right">
+          <h4 class="footer-right-title" data-i18n="footer_members">Thành viên</h4>
+
+          <div class="member-grid">
+            <div class="member-card">
+              <img src="images/nvinh.jpg" alt="Member 1" />
+              <span class="member-name">Nguyễn Văn Vinh</span>
+            </div>
+            <div class="member-card">
+              <img src="images\dvin.jpg" alt="Member 2" />
+              <span class="member-name">Đỗ Văn Vinh</span>
+            </div>
+            <div class="member-card">
+              <img src="images\tmt.jpg" alt="Member 3" />
+              <span class="member-name">Trần Mạnh Tiến</span>
+            </div>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/rooms.js"></script>
+</body>
+</html>

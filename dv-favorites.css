@@ -1,0 +1,180 @@
+/* ====== DANH SÁCH YÊU THÍCH ====== */
+.fav-section{ padding:40px 0 60px; }
+.fav-inner{ padding-top:24px; }
+.fav-header{ margin-bottom:16px; }
+
+.fav-title{
+  font-size:26px;
+  font-weight:800;
+  color:var(--text-main);
+}
+
+
+/* status / empty */
+.fav-status{ display:none; } /* không dùng thông báo */
+.fav-empty{
+  margin-top:30px;
+  padding:28px 20px;
+  border-radius:24px;
+  background:var(--bg-card);
+  border:1px dashed var(--border-soft);
+  text-align:center;
+  box-shadow:var(--shadow-soft);
+}
+.fav-empty i{
+  font-size:40px;
+  color:#fb7185;
+  margin-bottom:8px;
+}
+.fav-empty h2{ font-size:20px; margin-bottom:4px; }
+.fav-empty p{
+  font-size:14px;
+  color:var(--text-muted);
+  margin-bottom:14px;
+}
+.fav-empty-btn{ margin-top:6px; }
+
+/* GRID */
+.fav-grid{
+  margin-top:28px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  column-gap:22px;
+  row-gap:28px;
+}
+
+/* ===== card tối thiểu để không phụ thuộc rooms.css ===== */
+.room-card{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  border-radius:24px;
+  overflow:hidden;
+  background:var(--bg-card);
+  border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-soft);
+}
+
+.room-card__img-wrap{
+  position:relative;
+  aspect-ratio: 16 / 9;
+  overflow:hidden;
+}
+.room-card__img-wrap img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition: transform .25s ease;
+}
+.room-card:hover .room-card__img-wrap img{ transform: scale(1.05); }
+
+/* tim */
+.room-fav-btn{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(15,23,42,0.78);
+  color:#e5e7eb;
+  transition: transform .18s, background .18s, color .18s;
+}
+.room-fav-btn i{ font-size:18px; }
+.room-fav-btn:hover{ transform: translateY(-1px) scale(1.03); }
+.room-fav-btn.is-active{ background:#facc15; color:#1f2937; }
+
+.room-card__body{ padding:12px 16px 10px; }
+.room-card__title{ margin:0 0 6px; font-size:16px; font-weight:900; color:var(--text-main); }
+.room-card__meta{ margin:0 0 6px; font-size:12px; color:var(--text-muted); }
+.room-card__desc{
+  margin:0;
+  font-size:13px;
+  color:var(--text-muted);
+  line-height:1.45;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* FOOTER: giá trên, 2 nút dưới */
+.fav-card-footer{
+  margin-top:auto;
+  padding:12px 16px 16px;
+  border-top:1px solid var(--border-soft);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.fav-card-footer .room-card__price{
+  font-weight:800;
+  font-size:14px;
+  color:var(--color-amber);
+}
+
+.fav-card-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+.fav-card-actions > *{ flex:0 0 auto; }
+
+/* nút thêm vào giỏ */
+.fav-btn-cart{
+  border:none;
+  cursor:pointer;
+  font-size:12px;
+  padding:8px 16px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#f59e0b,#0ea5e9);
+  color:#fff;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:transform .18s, box-shadow .18s, filter .18s;
+  box-shadow:0 8px 18px rgba(15,23,42,0.45);
+}
+.fav-btn-cart:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 26px rgba(15,23,42,0.6);
+  filter:brightness(1.05);
+}
+.fav-btn-cart.is-added{ filter: brightness(1.12); }
+
+/* nút remove */
+.fav-btn-remove{
+  border:none;
+  cursor:pointer;
+  font-size:12px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:#fee2e2;
+  color:#b91c1c;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:background .18s, transform .18s;
+}
+.fav-btn-remove:hover{
+  background:#fecaca;
+  transform:translateY(-1px);
+}
+
+/* responsive */
+@media (max-width: 768px){
+  .fav-grid{
+    grid-template-columns:minmax(0,1fr);
+    row-gap:20px;
+  }
+  .fav-card-actions{ flex-wrap:wrap; }
+}
