@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <script src="jquery.js"></script>
+    <script src="bootstrap-5.0.2-dist\js\bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist\css\bootstrap.min.css">
+    
+</head>
+        <body>
+            <select id="daNgonNgu">
+            <option value="en">English</option>
+            <option value="vi">Tiếng Việt</option>
+        </select>
+
+        <p data-i18n="hello"></p>
+    <h2>danh sách Sản phẩm</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>price</th>
+                <th>duration</th>
+                <th>description</th>
+                <th>createdAt</th>
+                <th>img</th>
+                <th>thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="noiDung">
+
+        </tbody>
+    </table>
+    <script>
+        $(document).ready(function(){
+            hienThiSP()
+        })
+
+        function hienThiSP(){
+            $.ajax({
+                url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/tours',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data){
+                    let ND = '';
+                    data.forEach(sp => {
+                        ND += '<tr>'
+                        ND += '<td>' + sp.id + '</td>'
+                        ND += '<td>' + sp.title + '</td>'      
+                        ND += '<td>' + sp.price + '</td>'
+                        ND += '<td>' + sp.duration + '</td>'
+                        ND += '<td>' + sp.description + '</td>'
+                        ND += '<td>' + sp.createdAt + '</td>'
+                        ND += '<td>' + sp.img + '</td>'         
+                        ND += '<td><a href="Sua.html?id=' + sp.id + '" class="btn btn-warning">sửa</a>'
+                        ND += '<button onclick="xoaSP('+ sp.id +')" class="btn btn-danger">Xóa</button></td>'         
+                        ND += '</tr>'             
+                    });
+                    $('#noiDung').html(ND)
+                }
+            })
+        }
+        function xoaSP(id){
+            if(confirm('bạn có đồng ý xóa không')){
+                $.ajax({
+                    url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/tours/'+id,
+                    type: 'DELETE',
+                    dataType: 'json',
+                    success: function(data){
+                        hienThiSP()
+                    },
+                    error: function(e){
+                        alert('lỗi'+ e)
+                    }
+                })
+            }
+            
+        }
+    </script>
+    <script src="language.js"></script>
+</body>
+</html>

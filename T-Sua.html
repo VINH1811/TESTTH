@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="jquery.js"></script>
+    <script src="bootstrap-5.0.2-dist\js\bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist\css\bootstrap.min.css">
+</head>
+<body>
+    <h2>Sửa tour</h2>
+    <form action="">
+        <div>
+            <label for="title">title</label>
+            <input type="text" id="title" name="title">
+            <span id="titleErr"></span>
+        </div>
+        <button id="btnUpdate">sauwr</button>
+    </form>
+</body>
+<script>
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('id')
+    console.log(id)
+
+    $(document).ready(function(){
+        
+        $.ajax({
+            url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/tours/'+id,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data){
+                $('#title').val(data.title)
+            }
+        })
+        
+    })
+    $('#btnUpdate').click(function(){
+            event.preventDefault()
+            $.ajax({
+                url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/tours/'+id,
+                type: 'PUT',
+                data: {
+                    title: $('#title').val()
+                },
+                success: function(){
+                    alert('cập nhập thành công')
+                    window.location.href = 'QLtours.html'
+                }
+            })
+        })
+</script>
+
+</html>

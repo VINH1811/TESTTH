@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="jquery.js"></script>
+    <script src="bootstrap-5.0.2-dist\js\bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist\css\bootstrap.min.css">
+</head>
+<body>
+    <h2>Dăng nhập</h2>
+    <form action="">
+        <div>
+            <label for="hoTen">Họ tên:</label>
+            <input type="text" id="hoTen" name="hoTen">
+            <br>
+            <span id="hoTenErr" class="text-danger"></span>
+        </div>
+        <div>
+            <label for="matKhau">Mật khẩu:</label>
+            <input type="password" id="matKhau" name="matKhau">
+            <br>
+            <span id="matKhauErr"></span>
+        </div>
+        <button id="btnDangNhap" class="btn btn-primary">Đăng nhập</button>
+    </form>
+    <script>
+        $('#btnDangNhap').click(function(event){
+            event.preventDefault();
+            var hoTen = $('#hoTen').val()
+            var matKhau = $('#matKhau').val()
+            var isValid = true
+
+            $('#hoTenErr').text('')
+            $('#matKhau').text('')
+
+            if (hoTen.trim() == ''){
+                $('#hoTenErr').text('vui lòng nhập họ tên')
+                isValid = false
+            }
+            if (matKhau == ''){
+                $('#matKhauErr').text('vui lòng nhập mk')
+                isValid = false
+            }
+            if (isValid){
+                $.ajax({
+                    url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/user',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data){
+                        data.forEach(u => {
+                            if(u.hoTen == hoTen){
+                                var coHoTen = true
+                            }
+                            if(coHoTen && u.matKhau == matKhau){
+                                var dungMK = true
+                            }
+                            if(!coHoTen){
+                                $('#hoTenErr').text('không có họ tên đó vui lòng đăng ký')
+                            }
+                            if(!dungMK){
+                                $('#matKhauErr').text('sai mật khẩu')
+                            }
+                            // đăng nhập thành công 
+                            if (email === u.email && matKhau === u.matKhau) {
+                                sessionStorage.setItem("user", JSON.stringify(u));
+                                alert("Đăng nhập thành công!");
+                                window.location.href = "home.html"; 
+                            }
+                        });
+                    }
+
+                })
+            }
+            
+        })
+    </script>
+</body>
+</html>
+
+<!-- nhận thông tin đăng nhập -->
+<!-- <script>
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    if(!user){
+        alert("Bạn chưa đăng nhập!");
+        window.location.href = "login.html";
+    }
+
+    document.getElementById("tenUser").innerText = "Xin chào, " + user.hoTen;
+</script> -->

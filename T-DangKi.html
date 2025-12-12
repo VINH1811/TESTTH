@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery.js"></script>
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist\css\bootstrap.min.css">
+    <script src="bootstrap-5.0.2-dist\js\bootstrap.bundle.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <form action="">
+        <div>
+            <lable for="hoTen" class="form-lable">Họ và tên:</label>
+            <input type="text" name="hoTen" id="hoTen"/>
+            <br>
+            <span style="color: red;" id="hoTenErr"></span>
+        </div>
+        <div>
+            <lable for="email">Email:</label>
+            <input type="text" name="email" id="email"/>
+            <span style="color: red;" id="emailErr"></span>
+        </div>
+        <div>
+            <lable for="password">Mật Khẩu</lable>
+            <input type="password" name="password" id="password"/>
+            <span style="color: red;" id="passwordErr"></span>
+        </div>
+        <div>
+            <lable for="confirmPassword">Xác nhận mật khẩu:</label>
+            <input type="password" name="confirmPassword" id="confirmPassword"/>
+            <span style="color: red;" id="confirmPasswordErr"></span>
+        </div>
+        <input type="submit" value="Đăng ký" id="btndangky"/>
+    </form>
+    <script>
+    $('#btndangky').click(function(event){
+        event.preventDefault()
+
+        var hoTen = $('#hoTen').val()
+        var email = $('#email').val()
+        var password = $('#password').val()
+        var confirmPassword = $('#confirmPassword').val()
+        var isValid = true
+
+        $('#hoTenErr').text('')
+        $('#emailErr').text('')
+        $('#passwordErr').text('')
+        $('#confirmPasswordErr').text('')
+        
+        if(hoTen == ''){
+            $('#hoTenErr').text('vui long nhập họ tên')
+            isValid = false
+        }
+        if(email == ''){
+            $('#emailErr').text('vui lòng nhập email')
+            isValid = false
+        }
+        if(password < 6){
+            $('#passwordErr').text('mật khẩu ít nhất 6 kí tự')
+            isValid = false
+        }if(confirmPassword != password){
+            $('#confirmPasswordErr').text('mật khẩu không trùng khớp')
+            isValid = false
+        }
+        if (!isValid) return
+        $.ajax({
+            url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/user',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(data){
+                var coEmail = data.some(function(u){
+                    return u.email == email
+                })
+                if (coEmail){
+                    $('#emailErr').text('đã có email')
+                    return
+                }
+                $.ajax({
+                    url: 'https://692b135b7615a15ff24ea9d3.mockapi.io/user',
+                    type: 'POST',
+                    data: {
+                        hoTen: hoTen,
+                        email: email,
+                        password: password
+                    },
+                    success: function(){
+                        alert('thêm người dùng thành công')
+                    },
+                    error: function(e){
+                        alert('lỗi' + e)
+                    }
+
+                })
+            }
+        })
+
+    })
+    </script>
+
+</body>
+</html>
